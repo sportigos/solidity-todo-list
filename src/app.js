@@ -44,6 +44,9 @@ App = {
   
     loadAccount: async () => {
       // Set the current blockchain account
+      web3.eth.defaultAccount = web3.eth.accounts[0]
+    //   personal.unlockAccount(web3.eth.defaultAccount)
+
       App.account = web3.eth.accounts[0]
     },
   
@@ -95,7 +98,7 @@ App = {
         $newTaskTemplate.find('input')
                         .prop('name', taskId)
                         .prop('checked', taskCompleted)
-                        // .on('click', App.toggleCompleted)
+                        .on('click', App.toggleCompleted)
   
         // Put the task in the correct list
         if (taskCompleted) {
@@ -108,7 +111,21 @@ App = {
         $newTaskTemplate.show()
       }
     },
+
+    createTask: async () => {
+        App.setLoading(true)
+        const content = $('#newTask').val()
+        await App.todoList.createTask(content)
+        window.location.reload()
+    },
   
+    toggleCompleted: async (e) => {
+        App.setLoading(true)
+        const taskId = e.target.name
+        await App.todoList.toggleCompleted(taskId)
+        window.location.reload()
+    },
+      
     setLoading: (boolean) => {
       App.loading = boolean
       const loader = $('#loader')
